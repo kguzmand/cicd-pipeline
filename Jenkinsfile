@@ -35,5 +35,18 @@ pipeline {
                 '''
             }
         }
+
+        stage('Clean up old containers') {
+            steps {
+                script {
+                    def imageName = 'nodemain:v1.0'
+                    sh """
+                    # Elimina solo los contenedores que usan la imagen actual
+                    docker ps -a --filter ancestor=${imageName} -q | xargs -r docker rm -f
+                    """
+                }
+            }
+        }
+
     }
 }
