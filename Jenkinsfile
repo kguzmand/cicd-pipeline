@@ -29,10 +29,23 @@ pipeline {
 
         stage('Docker Build & Run') {
             steps {
-                sh '''
-                docker build -t nodedev:v1.0 .
-                docker run -d -p 3001:3001 nodedev:v1.0
-                '''
+                script {
+                    def imageName = 'nodedev:v1.0'
+                    def containerId = sh(script: "docker ps -q --filter 'ancestor=${imageName}'", returnStdout: true).trim()
+                    def usedPort = sh(script: "docker ps --filter 'publish=3001' --format '{{.ID}}'", returnStdout: true).trim()
+
+                    if (usedPort) {
+                        echo "Stopping and removing existing container using port 3001..."
+                        sh "docker stop ${usedPort} || true"
+                        sh "docker rm ${usedPort} || true"
+                    }
+
+                    echo "Building Docker image..."
+                    sh "docker build -t ${imageName} ."
+
+                    echo "Running container..."
+                    sh "docker run -d -p 3001:3001 ${imageName}"
+                }
             }
         }
 
