@@ -80,6 +80,12 @@ pipeline {
                 }
             }
         }
+        
+        stage('Trigger Deployment') {
+            steps {
+                build job: 'Deploy_to_dev'
+            }
+        }
 
     }
 }
