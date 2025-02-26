@@ -61,5 +61,25 @@ pipeline {
             }
         }
 
+        stage('Docker Push') {
+            steps {
+                script {
+                    def dockerUser = "tu-usuario"
+                    def imageName = "${dockerUser}/nodemain:v1.0" // Para main
+            
+                    echo "Logging into Docker Hub..."
+                    withCredentials([usernamePassword(credentialsId: 'docker-hub-credentials', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
+                        sh "echo $DOCKER_PASS | docker login -u $DOCKER_USER --password-stdin"
+                    }
+
+                    echo "Tagging image..."
+                    sh "docker tag nodemain:v1.0 ${imageName}" // Para main
+
+                    echo "Pushing image to Docker Hub..."
+                    sh "docker push ${imageName}"
+                }
+            }
+       }
+
     }
 }
