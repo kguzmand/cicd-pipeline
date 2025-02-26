@@ -1,3 +1,5 @@
+@Library('JenkinsTesLib@dev') _
+
 pipeline {
     agent any
 
@@ -87,5 +89,13 @@ pipeline {
             }
         }
 
+        stage('Deploy to Dev') {
+            steps {
+                script {
+                    // Llamamos a la Shared Library
+                    DeployToMaster(anyparam: "anyvalue")
+                }
+            }
+        }
     }
 }
