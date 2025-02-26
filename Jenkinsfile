@@ -64,7 +64,7 @@ pipeline {
         stage('Docker Push') {
             steps {
                 script {
-                    def dockerUser = "tu-usuario"
+                    def dockerUser = "kguzmand"
                     def imageName = "${dockerUser}/nodedev:v1.0" // Para dev
 
                     echo "Logging into Docker Hub..."
